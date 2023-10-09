@@ -18,6 +18,7 @@ model User {
   usersProducts UsersProducts[]
   avatar        Avatar[]
   externalId    String          @unique @map("external_id")
+  Product       Product[]
 
   @@map("users")
 }
@@ -26,6 +27,9 @@ model Product {
   id           Int             @id @default(autoincrement()) @map("product_id")
   name         String
   price        Int
+  description  String?
+  userId       Int?            @map("user_id")
+  user         User?           @relation(fields: [userId], references: [id])
   userProducts UsersProducts[]
   photos       Photo[]
 

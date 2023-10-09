@@ -11,14 +11,14 @@ async function main() {
     await Promise.all(USER.map(n => prisma.user.create({ data: { email: n.email, name: n.name, externalId: n.externalId } })))
         .then((users) => {
             const userIds = users.map(n => n.id)
-            seedProducts()
+            seedProducts(userIds[0])
             seedAvatar(userIds)
         })
 }
 
-function seedProducts() {
+function seedProducts(userId: number) {
     Promise.all(PRODUCTS.map(n => {
-        return prisma.product.create({ data: { name: n.name, price: n.price } })
+        return prisma.product.create({ data: { name: n.name, price: n.price, userId: userId } })
     })).then((products) => {
         const productIds = products.map(n => n.id)
         seedImages(productIds)

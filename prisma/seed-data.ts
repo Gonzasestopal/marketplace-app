@@ -11,18 +11,22 @@ export const PRODUCTS = [
     {
         name: 'Earthen Bottle',
         price: 4800,
+        description: "3 Sizes available"
     },
     {
         name: 'Nomad Tumbler',
         price: 3500,
+        description: "Walnut"
     },
     {
         name: 'Focus Paper Refill',
         price: 1300,
+        description: "Heather Gray",
     },
     {
         name: 'Machined Mechanical Pencil',
         price: 2300,
+        description: "3 refill packs",
     },
     // More products...
 ]

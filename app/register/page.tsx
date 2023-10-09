@@ -30,7 +30,6 @@ export default function RegisterPage() {
                     console.log('setting JWT', authUser.user.uid)
                     registerUser(email, authUser.user.uid, name).then(response => {
                         response.json().then(body => {
-                            console.log(body)
                             saveToStorage("accessToken", body.externalId)
                             saveToStorage("userId", body.id)
                             console.log("Success. The user is created in Firebase")

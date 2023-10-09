@@ -8,12 +8,14 @@ import getApiUrl from "../utils/api";
 import NavBar from '../shared/Navbar';
 import { useAuth } from '../context/auth';
 import { useRouter } from 'next/navigation';
+import ProductForm from '../shared/ProductForm';
 
 
 function getProducts() {
     const url = getApiUrl('products')
     return fetch(url)
 }
+
 
 export default function ProductListPage() {
     const router = useRouter()
@@ -27,14 +29,19 @@ export default function ProductListPage() {
             return;
         }
         router.push('/products')
-        getProducts().then(res => res.json()).then(data => setProducts(data))
+        getProducts().then(res => res.json()).then(data => {
+            setProducts(data)
+        })
     }, [user])
+
 
     return (
         <div>
             <NavBar></NavBar>
             <div className="bg-white">
                 <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                    <ProductForm setProducts={setProducts}></ProductForm>
+
                     <h2 className="text-2xl font-bold tracking-tight text-gray-900">Customers also purchased</h2>
 
                     <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
@@ -63,6 +70,6 @@ export default function ProductListPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
