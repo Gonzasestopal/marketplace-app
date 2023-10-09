@@ -1,14 +1,32 @@
 import { NextResponse } from "next/server";
-import User from "../schema";
+import { prisma } from "@/app/utils/prisma";
+import { NextRequest } from "next/server";
+import { Avatar } from "@prisma/client";
 
-const user: User = {
-    id: 1,
-    name: 'Gonzalo',
-    status: 'active',
-    email: 'gonzasestopal@gmail.com',
-    profile: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+type GetUserParam = {
+    id: number
 }
 
-export async function GET() {
-    return NextResponse.json(user);
+export type UserWithAvatar = {
+    id: string
+    name: string
+    email: string
+    avatar: Avatar[]
+}
+
+export async function GET(_: NextRequest, { params }: { params: GetUserParam }) {
+    const filterByUser = {
+        include: {
+            avatar: true,
+        },
+        where: {
+            id: Number(params.id),
+        }
+    }
+
+    const userWithAvatar = await prisma.user.findFirstOrThrow(filterByUser)
+
+    console.log(userWithAvatar)
+
+    return NextResponse.json(userWithAvatar);
 }

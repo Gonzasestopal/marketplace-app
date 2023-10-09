@@ -1,6 +1,6 @@
 'use client'
 
-import Product from "../api/products/schema";
+import { ProductWithPhotos } from '../api/products/route';
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useEffect } from 'react';
@@ -12,7 +12,7 @@ function getProducts() {
 }
 
 export default function ProductListPage() {
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<ProductWithPhotos[]>([]);
 
     useEffect(() => {
         getProducts().then(res => res.json()).then(data => setProducts(data))
@@ -28,8 +28,8 @@ export default function ProductListPage() {
                         <div key={product.id} className="group relative">
                             <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80">
                                 <img
-                                    src={product.images[0].src}
-                                    alt={product.images[0].alt}
+                                    src={product.photos.at(0)?.url}
+                                    alt={product.photos.at(0)?.description}
                                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                                 />
                             </div>

@@ -3,7 +3,7 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/24/outline'
-import User from '../api/users/schema';
+import { UserWithAvatar } from '../api/users/[id]/route';
 
 type Section = {
     name: string;
@@ -21,7 +21,7 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function NavBar({ user }: { user: User }) {
+export default function NavBar({ user }: { user: UserWithAvatar }) {
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
@@ -68,7 +68,7 @@ export default function NavBar({ user }: { user: User }) {
                                             <span className="sr-only">Open user menu</span>
                                             <img
                                                 className="h-8 w-8 rounded-full"
-                                                src={user?.profile}
+                                                src={user?.avatar?.at(0)?.url}
                                                 alt=""
                                             />
                                         </Menu.Button>

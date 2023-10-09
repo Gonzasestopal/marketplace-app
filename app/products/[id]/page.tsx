@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import Product from "../../api/products/schema";
+import { Product } from '@prisma/client';
 import { StarIcon } from '@heroicons/react/20/solid'
 import { useEffect } from 'react';
 import { useParams } from 'next/navigation'
@@ -15,7 +15,36 @@ function getProduct(productId: string | string[]) {
     const url = getApiUrl(`products/${productId}`)
     return fetch(url)
 }
-
+const categories = [
+    { id: 1, name: 'Men', href: '#' },
+    { id: 2, name: 'Clothing', href: '#' },
+]
+const relatedImages = [
+    {
+        src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-secondary-product-shot.jpg',
+        alt: 'Two each of gray, white, and black shirts laying flat.',
+    },
+    {
+        src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-01.jpg',
+        alt: 'Model wearing plain black basic tee.',
+    },
+    {
+        src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-tertiary-product-shot-02.jpg',
+        alt: 'Model wearing plain gray basic tee.',
+    },
+    {
+        src: 'https://tailwindui.com/img/ecommerce-images/product-page-02-featured-product-shot.jpg',
+        alt: 'Model wearing plain white basic tee.',
+    },
+]
+const description = 'The Basic Tee 6-Pack allows you to fully express your vibrant personality with three grayscale options. Feeling adventurous? Put on a heather gray tee. Want to be a trendsetter? Try our exclusive colorway: "Black". Need to add an extra pop of color to your outfit? Our white tee has you covered.'
+const highlights = [
+    'Hand cut and sewn locally',
+    'Dyed with our proprietary colors',
+    'Pre-washed & pre-shrunk',
+    'Ultra-soft 100% cotton',
+]
+const details = 'The 6-Pack includes two black, two white, and two heather gray Basic Tees. Sign up for our subscription service and be the first to get new, exciting colors, like our upcoming "Charcoal Gray" limited release.'
 const reviews = { href: '#', average: 4, totalCount: 117 }
 
 export default function ProductDetailPage() {
@@ -33,7 +62,7 @@ export default function ProductDetailPage() {
             <div className="pt-6">
                 <nav aria-label="Breadcrumb">
                     <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-                        {product?.categories.map((breadcrumb) => (
+                        {categories.map((breadcrumb) => (
                             <li key={breadcrumb.id}>
                                 <div className="flex items-center">
                                     <a href={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
@@ -53,7 +82,7 @@ export default function ProductDetailPage() {
                             </li>
                         ))}
                         <li className="text-sm">
-                            <a href={product?.href} aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
+                            <a href='#' aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
                                 {product?.name}
                             </a>
                         </li>
@@ -64,31 +93,31 @@ export default function ProductDetailPage() {
                 <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
                     <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
                         <img
-                            src={product?.images[0].src}
-                            alt={product?.images[0].alt}
+                            src={relatedImages[0].src}
+                            alt={relatedImages[0].alt}
                             className="h-full w-full object-cover object-center"
                         />
                     </div>
                     <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
                         <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                             <img
-                                src={product?.images[1].src}
-                                alt={product?.images[1].alt}
+                                src={relatedImages[1].src}
+                                alt={relatedImages[1].alt}
                                 className="h-full w-full object-cover object-center"
                             />
                         </div>
                         <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                             <img
-                                src={product?.images[2].src}
-                                alt={product?.images[2].alt}
+                                src={relatedImages[2].src}
+                                alt={relatedImages[2].alt}
                                 className="h-full w-full object-cover object-center"
                             />
                         </div>
                     </div>
                     <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
                         <img
-                            src={product?.images[3].src}
-                            alt={product?.images[3].alt}
+                            src={relatedImages[3].src}
+                            alt={relatedImages[3].alt}
                             className="h-full w-full object-cover object-center"
                         />
                     </div>
@@ -145,7 +174,7 @@ export default function ProductDetailPage() {
                             <h3 className="sr-only">Description</h3>
 
                             <div className="space-y-6">
-                                <p className="text-base text-gray-900">{product?.description}</p>
+                                <p className="text-base text-gray-900">{description}</p>
                             </div>
                         </div>
 
@@ -154,7 +183,7 @@ export default function ProductDetailPage() {
 
                             <div className="mt-4">
                                 <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                                    {product?.highlights?.map((highlight) => (
+                                    {highlights?.map((highlight) => (
                                         <li key={highlight} className="text-gray-400">
                                             <span className="text-gray-600">{highlight}</span>
                                         </li>
@@ -167,7 +196,7 @@ export default function ProductDetailPage() {
                             <h2 className="text-sm font-medium text-gray-900">Details</h2>
 
                             <div className="mt-4 space-y-6">
-                                <p className="text-sm text-gray-600">{product?.details}</p>
+                                <p className="text-sm text-gray-600">{details}</p>
                             </div>
                         </div>
                     </div>
