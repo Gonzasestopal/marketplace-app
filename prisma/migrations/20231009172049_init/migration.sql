@@ -3,6 +3,7 @@ CREATE TABLE "users" (
     "user_id" SERIAL NOT NULL,
     "email" TEXT NOT NULL,
     "name" TEXT,
+    "external_id" TEXT NOT NULL,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("user_id")
 );
@@ -47,6 +48,9 @@ CREATE TABLE "users_products" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_external_id_key" ON "users"("external_id");
 
 -- AddForeignKey
 ALTER TABLE "photos" ADD CONSTRAINT "photos_product_id_fkey" FOREIGN KEY ("product_id") REFERENCES "products"("product_id") ON DELETE RESTRICT ON UPDATE CASCADE;

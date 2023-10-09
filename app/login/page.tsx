@@ -1,7 +1,48 @@
 "use client";
 import Link from 'next/link'
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../context/auth';
+import getApiUrl from '../utils/api';
+import { saveToStorage } from '../utils/local-storage';
+
+
+async function loginUser(email: string, password: string) {
+    const url = getApiUrl("auth/login")
+    return fetch(url, { method: 'POST', body: JSON.stringify({ email: email, password: password }) })
+}
 
 export default function Login() {
+    const { logIn } = useAuth();
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState("");
+
+    const router = useRouter()
+
+    const onSubmit = (event: any) => {
+        setError("")
+        //check if passwords match. If they do, create user in Firebase
+        // and redirect to your logged in page.
+        logIn(email, password)
+            .then((_authUser: any) => {
+                loginUser(email, password).then(response => {
+                    response.json().then(body => {
+                        console.log("setting JWT", body.externalId)
+                        console.log("Success. The user is logged in")
+                        saveToStorage("accessToken", body.externalId)
+                        router.push("/products");
+                    })
+
+                })
+            })
+            .catch((error: any) => {
+                // An error occurred. Set error message to be displayed to user
+                setError(error.message)
+            });
+        event.preventDefault();
+    };
+
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -16,7 +57,8 @@ export default function Login() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-6" action="#" method="POST">
+                <form className="space-y-6" action="#" method="POST" onSubmit={onSubmit}>
+                    {error && <p color="danger">{error}</p>}
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                             Email address
@@ -27,6 +69,8 @@ export default function Login() {
                                 name="email"
                                 type="email"
                                 autoComplete="email"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
                                 required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
@@ -49,6 +93,8 @@ export default function Login() {
                                 id="password"
                                 name="password"
                                 type="password"
+                                value={password}
+                                onChange={(event) => setPassword(event.target.value)}
                                 autoComplete="current-password"
                                 required
                                 className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

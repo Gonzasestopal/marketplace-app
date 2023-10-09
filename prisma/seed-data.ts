@@ -1,7 +1,8 @@
 export const USER = [
     {
         "email": "gonzasestopal@gmail.com",
-        "name": "Gonzalo"
+        "name": "Gonzalo",
+        "externalId": "eZi3ZCoz91XGxhuXH6sUDH9LYXy1"
     }
 ]
 

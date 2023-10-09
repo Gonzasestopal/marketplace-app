@@ -4,7 +4,7 @@ import { NextRequest } from "next/server";
 import { Avatar } from "@prisma/client";
 
 type GetUserParam = {
-    id: number
+    id: string
 }
 
 export type UserWithAvatar = {
@@ -14,7 +14,11 @@ export type UserWithAvatar = {
     avatar: Avatar[]
 }
 
-export async function GET(_: NextRequest, { params }: { params: GetUserParam }) {
+export async function GET(request: NextRequest, { params }: { params: GetUserParam }) {
+    const accessToken = request.headers.get("Authorization")?.split(' ')[1];
+    if (!accessToken) {
+        return NextResponse.json({ error: "Missing JWT" }, { status: 403 });
+    }
     const filterByUser = {
         include: {
             avatar: true,
@@ -26,7 +30,9 @@ export async function GET(_: NextRequest, { params }: { params: GetUserParam }) 
 
     const userWithAvatar = await prisma.user.findFirstOrThrow(filterByUser)
 
-    console.log(userWithAvatar)
+    if (userWithAvatar.externalId != accessToken) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
 
     return NextResponse.json(userWithAvatar);
 }

@@ -8,7 +8,7 @@ const prisma = new PrismaClient()
  */
 
 async function main() {
-    await Promise.all(USER.map(n => prisma.user.create({ data: { email: n.email, name: n.name } })))
+    await Promise.all(USER.map(n => prisma.user.create({ data: { email: n.email, name: n.name, externalId: n.externalId } })))
         .then((users) => {
             const userIds = users.map(n => n.id)
             seedProducts()

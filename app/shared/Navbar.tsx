@@ -3,7 +3,12 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/24/outline'
+import { useAuth } from '../context/auth';
+import { useRouter } from 'next/navigation';
+import getApiUrl from '../utils/api';
 import { UserWithAvatar } from '../api/users/[id]/route';
+import { useState, useEffect } from 'react';
+import { saveToStorage, getFromStorage } from '../utils/local-storage';
 
 type Section = {
     name: string;
@@ -21,7 +26,37 @@ function classNames(...classes: string[]) {
     return classes.filter(Boolean).join(' ')
 }
 
-export default function NavBar({ user }: { user: UserWithAvatar }) {
+function getUserWithAvatar(userId: string | undefined, token: string | undefined) {
+    const headers = { Authorization: `Bearer ${token}` }
+    const url = getApiUrl(`users/${userId}`)
+    return fetch(url, { headers: headers })
+}
+
+export default function NavBar() {
+    const { logOut, user } = useAuth();
+
+    const router = useRouter();
+    const externalId = getFromStorage("accessToken") ?? undefined
+    const userId = getFromStorage("userId") ?? undefined
+
+    const [userWithAvatar, setUser] = useState<UserWithAvatar>();
+
+    useEffect(() => {
+        if (!user.uid) return;
+        getUserWithAvatar(userId, externalId).then(res => res.json()).then(data => setUser(data))
+    }, [])
+
+    const handleLogout = async () => {
+        try {
+            await logOut();
+            saveToStorage("accessToken", "")
+            saveToStorage("userId", "")
+            router.push("/login");
+        } catch (error: any) {
+            console.log(error.message);
+        }
+    };
+
     return (
         <Disclosure as="nav" className="bg-gray-800">
             {({ open }) => (
@@ -30,7 +65,7 @@ export default function NavBar({ user }: { user: UserWithAvatar }) {
                         <div className="relative flex h-16 items-center justify-between">
                             <div className="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
                                 <div className="flex flex-shrink-0 items-center">
-                                    <p className="text-white">Welcome back {user?.name}!</p>
+                                    <p className="text-white">Welcome back {userWithAvatar?.name}!</p>
                                 </div>
                                 <div className="hidden sm:ml-6 sm:block">
                                     <div className="flex space-x-4">
@@ -68,7 +103,7 @@ export default function NavBar({ user }: { user: UserWithAvatar }) {
                                             <span className="sr-only">Open user menu</span>
                                             <img
                                                 className="h-8 w-8 rounded-full"
-                                                src={user?.avatar?.at(0)?.url}
+                                                src={userWithAvatar?.avatar?.at(0)?.url}
                                                 alt=""
                                             />
                                         </Menu.Button>
@@ -106,7 +141,7 @@ export default function NavBar({ user }: { user: UserWithAvatar }) {
                                             <Menu.Item>
                                                 {({ active }) => (
                                                     <a
-                                                        href="#"
+                                                        onClick={handleLogout}
                                                         className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                     >
                                                         Sign out

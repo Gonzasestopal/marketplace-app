@@ -1,29 +1,20 @@
 'use client';
 
-import ProductListPage from './products/page';
-import React, { useState } from 'react';
-import Navbar from './shared/Navbar';
-import { useEffect } from 'react';
-import { UserWithAvatar } from './api/users/[id]/route';
-import getApiUrl from './utils/api';
+import React from 'react';
+import { useAuth } from './context/auth';
+import { useRouter } from 'next/navigation';
 
-
-function getUser() {
-	const url = getApiUrl('users/1')
-	return fetch(url)
-}
 
 export default function Home() {
-	const [user, setUser] = useState<UserWithAvatar>();
+	const router = useRouter()
+	const { user } = useAuth()
 
-	useEffect(() => {
-		getUser().then(res => res.json()).then(data => setUser(data))
-	}, [])
+	React.useEffect(() => {
+		if (!user.uid) router.push("/login")
+		router.push('/products')
+	}, [user])
 
 	return (
-		<div>
-			<Navbar user={user!}></Navbar>
-			<ProductListPage></ProductListPage>
-		</div >
+		<div></div>
 	)
 }
