@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../context/auth';
 import getApiUrl from '../utils/api';
 import { saveToStorage } from '../utils/local-storage';
+import Link from 'next/link';
 
 function registerUser(email: string, externalId: string, name: string) {
     const url = getApiUrl("auth/register")
@@ -149,10 +150,10 @@ export default function RegisterPage() {
                 </form>
 
                 <p className="mt-10 text-center text-sm text-gray-500">
-                    Not a member?{' '}
-                    <a href="#" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
-                        Start a 14 day free trial
-                    </a>
+                    Already a member?{' '}
+                    <Link href="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">
+                        Log in
+                    </Link>
                 </p>
             </div>
         </div>
