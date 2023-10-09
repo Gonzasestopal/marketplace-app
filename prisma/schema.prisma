@@ -20,6 +20,7 @@ model User {
   externalId    String          @unique @map("external_id")
   Product       Product[]
 
+  @@index([externalId])
   @@map("users")
 }
 
@@ -33,6 +34,7 @@ model Product {
   userProducts UsersProducts[]
   photos       Photo[]
 
+  @@index([userId])
   @@map("products")
 }
 
@@ -53,6 +55,7 @@ model Avatar {
   userId      Int    @map("user_id")
   user        User   @relation(fields: [userId], references: [id])
 
+  @@index([userId])
   @@map("avatars")
 }
 
@@ -63,5 +66,6 @@ model UsersProducts {
   product   Product @relation(fields: [productId], references: [id])
   productId Int     @map("product_id")
 
+  @@index([productId])
   @@map("users_products")
 }
